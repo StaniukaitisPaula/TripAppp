@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">TripApp</string>
+    <string name="login">Login</string>
+    <string name="please_sign_in">Please sign in to continue</string>
+    <string name="email">E-mail</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Sign in</string>
+    <string name="dont_have_account">Don\'t have an account?</string>
+    <string name="sign_up">Sign up</string>
+    <string name="title_activity_sign_up">SignUpActivity</string>
+    <string name="username">Username</string>
+    <string name="phone">Phone</string>
+    <string name="over_18">Over 18?</string>
+    <string name="create_account">Create a new account</string>
+    <string name="already_have_account">Already have an account?</string>
+    <string name="email_description">E-mail icon inside textField</string>
+    <string name="password_description">Password icon inside textField</string>
+    <string name="arrow_description">Arrow icon inside textField</string>
+    <string name="user_description">User icon inside textField</string>
+    <string name="phone_description">Phone icon inside textField</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="susanna_description">Susanna image</string>
+    <string name="susanna_hoffs">Susanna Hoffs</string>
+    <string name="location_description">Location Icon</string>
+    <string name="youre_in_paris">You\'re in Paris</string>
+    <string name="my_trips">My Trips</string>
+    <string name="categories">Categories</string>
+    <string name="search_your_destiny">Search your destiny</string>
+    <string name="search_your_destiny_description">Search icon inside textField</string>
+    <string name="past_trips">Past Trips</string>
+</resources>
