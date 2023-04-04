@@ -13,6 +13,5 @@ data class User(
     var email: String = "",
     var password: String = "",
     var phone: String = "",
-    @ColumnInfo(name = "is_over_18")
-    var isOver18: Boolean = false
+    @ColumnInfo(name = "is_over_18") var isOver18: Boolean = false
 )

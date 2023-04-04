@@ -2,6 +2,7 @@ package br.senai.sp.jandira.tripapp.gui
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -36,12 +37,27 @@ import androidx.compose.ui.unit.sp
 import br.senai.sp.jandira.tripapp.R
 import br.senai.sp.jandira.tripapp.components.BottomShape
 import br.senai.sp.jandira.tripapp.components.TopShape
+import br.senai.sp.jandira.tripapp.model.User
+import br.senai.sp.jandira.tripapp.repository.UserRepository
 import br.senai.sp.jandira.tripapp.ui.theme.TripAppTheme
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 class SignUpActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val user = User(
+            userName = "maria",
+            email = "mariaaa@gmail.com",
+            password = "12345678",
+            phone = "(11)99999-9999",
+            isOver18 = true
+        )
+        val userRep = UserRepository(this)
+        var id = userRep.save(user)
+
+        Toast.makeText(this, "$id", Toast.LENGTH_LONG).show()
+
         setContent {
             TripAppTheme {
 
@@ -250,7 +266,9 @@ fun SignUpScreen() {
                     }
                 }
                 Row(
-                    modifier = Modifier.padding(top = 28.dp, end = 28.dp).fillMaxWidth(),
+                    modifier = Modifier
+                        .padding(top = 28.dp, end = 28.dp)
+                        .fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
                 ) {
                     Text(
