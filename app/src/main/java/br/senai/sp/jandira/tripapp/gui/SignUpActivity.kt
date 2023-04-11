@@ -1,7 +1,10 @@
 package br.senai.sp.jandira.tripapp.gui
 
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,8 +19,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Place
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,6 +32,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -48,7 +51,7 @@ class SignUpActivity : ComponentActivity() {
 
         val user = User(
             userName = "maria",
-            email = "mariaaa@gmail.com",
+            email = "maria@gmail.com",
             password = "12345678",
             phone = "(11)99999-9999",
             isOver18 = true
@@ -72,6 +75,28 @@ class SignUpActivity : ComponentActivity() {
 @Preview(showSystemUi = true)
 @Composable
 fun SignUpScreen() {
+
+    var photUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+
+
+    var userNameState by remember {
+        mutableStateOf("")
+    }
+    var phoneState by remember {
+        mutableStateOf("")
+    }
+    var emailState by remember {
+        mutableStateOf("")
+    }
+    var passState by remember {
+        mutableStateOf("")
+    }
+    var over18State by remember {
+        mutableStateOf(false)
+    }
+
 
     val context = LocalContext.current
 
@@ -119,7 +144,6 @@ fun SignUpScreen() {
                         Image(
                             painter = painterResource(id = R.drawable.user),
                             contentDescription = "",
-
                             )
                     }
                     Image(
@@ -143,8 +167,8 @@ fun SignUpScreen() {
                 ) {
                     OutlinedTextField(
                         modifier = Modifier.width(320.dp),
-                        value = "",
-                        onValueChange = {},
+                        value = userNameState,
+                        onValueChange = { userNameState = it },
                         label = {
                             Text(
                                 stringResource(id = R.string.username)
@@ -166,8 +190,10 @@ fun SignUpScreen() {
                     )
                     OutlinedTextField(
                         modifier = Modifier.width(320.dp),
-                        value = "",
-                        onValueChange = {},
+                        value = phoneState,
+                        onValueChange = { phoneState = it },
+                        shape = RoundedCornerShape(20.dp),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                         label = {
                             Text(
                                 stringResource(id = R.string.phone)
@@ -180,8 +206,6 @@ fun SignUpScreen() {
                                 tint = colorResource(id = R.color.primary_color)
                             )
                         },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                        shape = RoundedCornerShape(20.dp),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             focusedBorderColor = colorResource(id = R.color.primary_color),
                             unfocusedBorderColor = colorResource(id = R.color.primary_color)
@@ -189,8 +213,10 @@ fun SignUpScreen() {
                     )
                     OutlinedTextField(
                         modifier = Modifier.width(320.dp),
-                        value = "",
-                        onValueChange = {},
+                        value = emailState,
+                        onValueChange = { emailState = it },
+                        shape = RoundedCornerShape(20.dp),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                         label = {
                             Text(
                                 stringResource(id = R.string.email)
@@ -203,8 +229,6 @@ fun SignUpScreen() {
                                 tint = colorResource(id = R.color.primary_color)
                             )
                         },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                        shape = RoundedCornerShape(20.dp),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             focusedBorderColor = colorResource(id = R.color.primary_color),
                             unfocusedBorderColor = colorResource(id = R.color.primary_color)
@@ -212,8 +236,10 @@ fun SignUpScreen() {
                     )
                     OutlinedTextField(
                         modifier = Modifier.width(320.dp),
-                        value = "",
-                        onValueChange = {},
+                        value = passState,
+                        onValueChange = { passState = it },
+                        shape = RoundedCornerShape(20.dp),
+                        visualTransformation = PasswordVisualTransformation(),
                         label = {
                             Text(
                                 stringResource(id = R.string.password)
@@ -226,8 +252,6 @@ fun SignUpScreen() {
                                 tint = colorResource(id = R.color.primary_color)
                             )
                         },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                        shape = RoundedCornerShape(20.dp),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             focusedBorderColor = colorResource(id = R.color.primary_color),
                             unfocusedBorderColor = colorResource(id = R.color.primary_color)
@@ -240,7 +264,8 @@ fun SignUpScreen() {
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Start
                     ) {
-                        Checkbox(checked = false, onCheckedChange = {})
+                        Checkbox(checked = over18State,
+                            onCheckedChange = { checket -> over18State = checket })
                         Text(stringResource(id = R.string.over_18), fontSize = 14.sp)
                     }
 
@@ -248,7 +273,16 @@ fun SignUpScreen() {
                         horizontalAlignment = Alignment.End
                     ) {
                         Button(
-                            onClick = {},
+                            onClick = {
+                                saveUser(
+                                    userNameState,
+                                    phoneState,
+                                    emailState,
+                                    passState,
+                                    over18State,
+                                    context
+                                )
+                            },
                             modifier = Modifier
                                 .width(320.dp)
                                 .height(48.dp),
@@ -257,9 +291,16 @@ fun SignUpScreen() {
 
                         ) {
                             Text(
-                                stringResource(id = R.string.create_account).uppercase(),
+                                stringResource(id = R.string.create_account2).uppercase(),
                                 color = Color.White,
                                 fontSize = 16.sp,
+                            )
+                            Icon(
+                                painter = painterResource(id = R.drawable.forward_24),
+                                contentDescription = stringResource(
+                                    id = R.string.arrow_description
+                                ),
+                                tint = Color.White
                             )
                         }
 
@@ -304,5 +345,44 @@ fun SignUpScreen() {
         ) {
             BottomShape()
         }
+    }
+}
+
+fun saveUser(
+    userName: String,
+    phone: String,
+    email: String,
+    password: String,
+    isOver18: Boolean,
+    context: Context
+) {
+    //criando um objeto user
+    val  newUser = User(
+        id = 0,
+        userName = userName,
+        phone = phone,
+        email = email,
+        password = password,
+        isOver18 = isOver18
+    )
+    //criando uma instancia do repositório
+    val userRepository = UserRepository(context)
+
+    // verificar se o usuario ja existe
+    val user = userRepository.findUserByEmail(email)
+    Log.i("ds3m", "${user.toString()}")
+
+
+//    //salvar o usuario
+    if(user == null){
+
+        val id = userRepository.save(newUser)
+
+    }else{
+        Toast.makeText(
+            context,
+            "User already exists!",
+            Toast.LENGTH_LONG)
+            .show()
     }
 }

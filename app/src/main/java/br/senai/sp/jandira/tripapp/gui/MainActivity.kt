@@ -5,6 +5,8 @@ import android.content.Intent
 import android.graphics.drawable.Icon
 import android.os.Bundle
 import android.text.method.TextKeyListener.Capitalize
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -14,7 +16,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,6 +28,7 @@ import androidx.compose.ui.text.android.TextLayout
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,6 +36,8 @@ import androidx.compose.ui.unit.sp
 import br.senai.sp.jandira.tripapp.R
 import br.senai.sp.jandira.tripapp.components.BottomShape
 import br.senai.sp.jandira.tripapp.components.TopShape
+import br.senai.sp.jandira.tripapp.model.User
+import br.senai.sp.jandira.tripapp.repository.UserRepository
 import br.senai.sp.jandira.tripapp.ui.theme.TripAppTheme
 import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
@@ -40,6 +45,16 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val user = User(
+            email= "joaoVitor@g,ailcom",
+            password = "joao12"
+        )
+
+        val userRep = UserRepository(this)
+        var id = userRep.save(user)
+
+        Toast.makeText(this, "$id", Toast.LENGTH_LONG).show()
 
         setContent {
             TripAppTheme {
@@ -54,6 +69,13 @@ class MainActivity : ComponentActivity() {
 @Preview(showSystemUi = true)
 @Composable
 fun TripAppScreen() {
+
+    var emailState by remember {
+        mutableStateOf("")
+    }
+    var passState by remember {
+        mutableStateOf("")
+    }
 
     val context = LocalContext.current
 
@@ -99,8 +121,10 @@ fun TripAppScreen() {
 
                 OutlinedTextField(
                     modifier = Modifier.width(320.dp),
-                    value = "",
-                    onValueChange = {},
+                    value = emailState ,
+                    onValueChange = { emailState =  it },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    shape = RoundedCornerShape(20.dp),
                     label = {
                         Text(
                             stringResource(id = R.string.email)
@@ -113,8 +137,7 @@ fun TripAppScreen() {
                             tint = colorResource(id = R.color.primary_color)
                         )
                     },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                    shape = RoundedCornerShape(20.dp),
+
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = colorResource(id = R.color.primary_color),
                         unfocusedBorderColor = colorResource(id = R.color.primary_color)
@@ -124,8 +147,10 @@ fun TripAppScreen() {
                     modifier = Modifier
                         .width(320.dp)
                         .padding(top = 6.dp, bottom = 12.dp),
-                    value = "",
-                    onValueChange = {},
+                    value = passState,
+                    onValueChange = {passState = it},
+                    shape = RoundedCornerShape(20.dp),
+                    visualTransformation = PasswordVisualTransformation(),
                     label = {
                         Text(
                             stringResource(id = R.string.password)
@@ -138,8 +163,6 @@ fun TripAppScreen() {
                             tint = colorResource(id = R.color.primary_color)
                         )
                     },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    shape = RoundedCornerShape(20.dp),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = colorResource(id = R.color.primary_color),
                         unfocusedBorderColor = colorResource(id = R.color.primary_color)
@@ -153,8 +176,12 @@ fun TripAppScreen() {
                 ) {
                     Button(
                         onClick = {
-                            val openOther = Intent(context, LoginActivity::class.java)
-                            context.startActivity(openOther)
+                            authenticate(
+                                emailState,
+                                passState,
+                                context
+                            )
+
                         },
                         modifier = Modifier
                             .size(height = 48.dp, width = 134.dp),
@@ -217,4 +244,31 @@ fun TripAppScreen() {
             BottomShape()
         }
     }
+}
+
+fun authenticate (
+    email: String,
+    password: String,
+    context: Context
+) {
+    //criando uma instancia do repositório
+    val userRepository = UserRepository(context)
+
+    //verificar se o usuario ja existe
+    val user = userRepository.authenticate(email, password)
+    Log.i("ds3m", "${user.toString()}")
+
+    if(user == null ){
+
+        Toast.makeText(
+            context,
+            "invalid email or password!",
+            Toast.LENGTH_LONG)
+            .show()
+    }else{
+        val openOther = Intent(context, LoginActivity::class.java)
+        context.startActivity(openOther)
+
+    }
+
 }

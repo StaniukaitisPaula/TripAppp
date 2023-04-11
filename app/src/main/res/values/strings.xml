@@ -12,6 +12,7 @@
     <string name="phone">Phone</string>
     <string name="over_18">Over 18?</string>
     <string name="create_account">Create a new account</string>
+    <string name="create_account2">CREATE ACCOUNT</string>
     <string name="already_have_account">Already have an account?</string>
     <string name="email_description">E-mail icon inside textField</string>
     <string name="password_description">Password icon inside textField</string>
