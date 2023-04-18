@@ -267,6 +267,8 @@ fun authenticate (
             .show()
     }else{
         val openOther = Intent(context, LoginActivity::class.java)
+        openOther.putExtra("id", user.id)
+        openOther.putExtra("name", user.userName)
         context.startActivity(openOther)
 
     }
