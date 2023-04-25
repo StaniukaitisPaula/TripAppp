@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import br.senai.sp.jandira.tripapp.R
 import br.senai.sp.jandira.tripapp.gui.ui.theme.TripAppTheme
 import br.senai.sp.jandira.tripapp.model.Category
+import br.senai.sp.jandira.tripapp.model.Trip
 import br.senai.sp.jandira.tripapp.repository.CategoryRepository
 
 class HomeActivity : ComponentActivity() {
@@ -42,9 +44,7 @@ class HomeActivity : ComponentActivity() {
         )
         setContent {
             TripAppTheme {
-                Column() {
                     HomeScreen(CategoryRepository.getCategories())
-                }
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
@@ -57,7 +57,10 @@ class HomeActivity : ComponentActivity() {
 }
 
 @Composable
-fun HomeScreen(categories: List<Category>) {
+fun HomeScreen(
+    categories: List<Category>,
+    trips: List<Trip>
+) {
     Surface(
     ) {
         Column() {
@@ -160,13 +163,28 @@ fun HomeScreen(categories: List<Category>) {
                         Text(text = stringResource(id = R.string.search_your_destiny))
                     },
                     trailingIcon = {
-                        IconButton(onClick = {}
-
-                        ) {
+                        IconButton(onClick = {})
+                        {
                             Icon(imageVector = Icons.Default.Search, contentDescription = "")
                         }
                     }
                 )
+            Text(text = R.string.past_trips,
+                fontSize = 14.sp,
+                color = Color(86, 84, 84),
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp))
+                LazyColumn(){
+                    items(trips){
+                        Card(modifier = Modifier.fillMaxWidth()) {
+                            Column() {
+                                Image(painter = painterResource(id = R.drawable.no_photography_24), contentDescription = "")
+                                Text(text = "${it.location}, ${it.starDate.year}")
+                                Text(text = "${it.description}")
+                                
+                            }
+                        }
+                    }
+                }
 
             }
         }
