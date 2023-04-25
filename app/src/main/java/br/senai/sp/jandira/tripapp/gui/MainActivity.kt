@@ -266,7 +266,7 @@ fun authenticate (
             Toast.LENGTH_LONG)
             .show()
     }else{
-        val openOther = Intent(context, LoginActivity::class.java)
+        val openOther = Intent(context, HomeActivity::class.java)
         openOther.putExtra("id", user.id)
         openOther.putExtra("name", user.userName)
         context.startActivity(openOther)

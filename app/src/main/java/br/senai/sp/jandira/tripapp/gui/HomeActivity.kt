@@ -7,35 +7,35 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.senai.sp.jandira.tripapp.R
-import br.senai.sp.jandira.tripapp.ui.theme.TripAppTheme
+import br.senai.sp.jandira.tripapp.gui.ui.theme.TripAppTheme
+import br.senai.sp.jandira.tripapp.model.Category
+import br.senai.sp.jandira.tripapp.repository.CategoryRepository
 
-class LoginActivity : ComponentActivity() {
+class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-       
         Log.i(
             "ds2m",
             "id"
@@ -43,26 +43,35 @@ class LoginActivity : ComponentActivity() {
         setContent {
             TripAppTheme {
                 Column() {
-                    LoginScreen()
+                    HomeScreen(CategoryRepository.getCategories())
+                }
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colors.background
+                ) {
+
                 }
             }
         }
     }
 }
 
-@Preview(showSystemUi = true)
 @Composable
-fun LoginScreen() {
+fun HomeScreen(categories: List<Category>) {
     Surface(
-        modifier = Modifier.fillMaxSize()
     ) {
         Column() {
             Card(
-                modifier = Modifier.height(197.dp),
+                modifier = Modifier.height(200.dp),
                 elevation = 4.dp,
-                shape = RoundedCornerShape(size = 12.dp),
-                backgroundColor = Color.Magenta
+                shape = RectangleShape,
             ) {
+                Image(
+                    painter = painterResource(id = R.drawable.paris),
+                    contentDescription = "",
+                    modifier = Modifier.fillMaxWidth(),
+                    contentScale = ContentScale.Crop
+                )
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -107,37 +116,68 @@ fun LoginScreen() {
                 }
             }
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp),
+
             ) {
                 Text(
                     text = stringResource(id = R.string.categories),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp),
                 )
-                LazyRow() {}
+                LazyRow() {
+                    items(categories){
+                        Card(
+                            modifier = Modifier
+                                .size(width = 109.dp, height = 80.dp)
+                                .padding(vertical = 8.dp, horizontal = 4.dp),
+                            backgroundColor = Color(207, 6, 240)
+                        ){
+                          Column(horizontalAlignment = Alignment.CenterHorizontally,
+                              verticalArrangement = Arrangement.Center
+
+                              ) {
+                              Image(
+                                  painter = it.categoryIcon,
+                                  contentDescription = it.categoryName
+                              )
+                              Text(
+                                  text = it.categoryName,
+                                  fontSize = 14.sp,
+                                  color = Color.White
+                              )
+                          }
+                        }
+                    }
+                }
                 OutlinedTextField(
-                    modifier = Modifier.width(320.dp),
                     value = "",
                     onValueChange = {},
-                    label = {
-                        Text(
-                            stringResource(R.string.search_your_destiny)
-                        )
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    placeholder = {
+                        Text(text = stringResource(id = R.string.search_your_destiny))
                     },
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.search_24),
-                            contentDescription = stringResource(R.string.search_your_destiny_description),
-//
-                        )
-                    },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                    shape = RoundedCornerShape(20.dp)
+                    trailingIcon = {
+                        IconButton(onClick = {}
+
+                        ) {
+                            Icon(imageVector = Icons.Default.Search, contentDescription = "")
+                        }
+                    }
                 )
-                Text(text = "Past Trips")
-                LazyColumn() {}
+
             }
         }
 
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun Homew() {
+    TripAppTheme {
+        HomeScreen(CategoryRepository.getCategories())
     }
 }
