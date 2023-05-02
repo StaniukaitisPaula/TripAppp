@@ -25,6 +25,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,6 +34,7 @@ import br.senai.sp.jandira.tripapp.gui.ui.theme.TripAppTheme
 import br.senai.sp.jandira.tripapp.model.Category
 import br.senai.sp.jandira.tripapp.model.Trip
 import br.senai.sp.jandira.tripapp.repository.CategoryRepository
+import br.senai.sp.jandira.tripapp.repository.TripRepository
 
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,14 +45,20 @@ class HomeActivity : ComponentActivity() {
             "id"
         )
         setContent {
-            TripAppTheme {
-                    HomeScreen(CategoryRepository.getCategories())
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
+            Column() {
 
-                }
+            }
+            TripAppTheme {
+                    HomeScreen(CategoryRepository.getCategories(),
+                        TripRepository.getTrips()
+                    )
+//                Surface(
+//                     modifier = Modifier.fillMaxSize(),
+//                    color = MaterialTheme.colors.background
+//                )
+//                {
+//
+//                }
             }
         }
     }
@@ -169,18 +177,22 @@ fun HomeScreen(
                         }
                     }
                 )
-            Text(text = R.string.past_trips,
-                fontSize = 14.sp,
-                color = Color(86, 84, 84),
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp))
+                Text(text =stringResource(id = R.string.past_trips),
+                    fontSize = 14.sp,
+                    color =Color(86, 86, 84),
+                    modifier = Modifier.padding(16.dp))
                 LazyColumn(){
                     items(trips){
-                        Card(modifier = Modifier.fillMaxWidth()) {
-                            Column() {
-                                Image(painter = painterResource(id = R.drawable.no_photography_24), contentDescription = "")
+                        Card(modifier = Modifier.fillMaxWidth()
+                            .padding(16.dp),
+                            backgroundColor = Color.Cyan){
+                            Column(modifier = Modifier.padding(8.dp)){
+                                Image(painter =painterResource(id = R.drawable.no_photography_24), contentDescription = "")
                                 Text(text = "${it.location}, ${it.starDate.year}")
-                                Text(text = "${it.description}")
-                                
+                                Text(text =it.description)
+                                Text(text = "${it.starDate} - ${it.endDate}",
+                                    textAlign = TextAlign.End,
+                                    modifier = Modifier.fillMaxWidth())
                             }
                         }
                     }
@@ -196,6 +208,7 @@ fun HomeScreen(
 @Composable
 fun Homew() {
     TripAppTheme {
-        HomeScreen(CategoryRepository.getCategories())
+        HomeScreen(CategoryRepository.getCategories(),
+        TripRepository.getTrips())
     }
 }
